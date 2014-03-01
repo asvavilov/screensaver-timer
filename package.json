@@ -1,0 +1,11 @@
+{
+  "name": "timer",
+  "main": "index.html",
+  "window": {
+    "toolbar": false,
+    "frame": false,
+    "show_in_taskbar": true,
+    "always-on-top": false,
+    "fullscreen": true
+  }
+}

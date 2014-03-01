@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>timer</title>
+	<script>
+		var gui = require('nw.gui');
+		var doQuit = function()
+		{
+			gui.App.quit();
+		}
+		document.addEventListener('mouseup', doQuit);
+		document.addEventListener('keyup', doQuit);
+	</script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function(event) {
+			
+			// animation step (min/max pixels per some time)
+			var step_limit_px = [1, 10];
+			
+			var $ = function (dom_id)
+			{
+				return document.getElementById(dom_id);
+			};
+			
+			var counter = 0; // TODO screensaver offset
+			var onTime = function()
+			{
+				var mul = 1;
+				[
+					['second', 60, ['секунд', 'секунду', 'секунды']],
+					['minute', 60, ['минут', 'минуту', 'минуты']],
+					['hour', 24, ['часов', 'час', 'часа']],
+					['day', null, ['дней', 'день', 'дня']]
+				].forEach(
+					function(part, i)
+					{
+						var item = Math.floor(counter / mul);
+						if (part[1] > 1)
+						{
+							item %= part[1];
+						}
+						if (part[0] == 'second' && item == 0)
+						{
+							resetMove();
+						}
+						$(part[0] + '-counter').innerHTML = item;
+						var mod10 = item % 10;
+						$(part[0] + '-text').innerHTML = part[2][parseInt(((mod10 == 0 || mod10 >= 5 || (item >= 11 && item <= 14)) && '0') || ((mod10 == 1) && '1') || '2')];
+						mul *= part[1];
+					}
+				);
+			};
+			window.setInterval(function(){ counter++; onTime(); }, 1000);
+			onTime();
+			
+			var angle = 0;
+			var step_px = 0;
+			function resetMove()
+			{
+				var window_rect = $('body').getBoundingClientRect();
+				var box_rect = $('box').getBoundingClientRect();
+				var left = (window_rect.width - box_rect.width) / 2;
+				var top = (window_rect.height - box_rect.height) / 2;
+				$('box').style.left = left + 'px';
+				$('box').style.top = top + 'px';
+				angle = 180 - Math.round(Math.random() * 360);
+				step_px = step_limit_px[0] + (step_limit_px[1] - step_limit_px[0]) * Math.random();
+			}
+			resetMove();
+			
+			var last_ts = 0;
+			function onAnimationFrame(ts) {
+				var window_rect = $('body').getBoundingClientRect();
+				var box_rect = $('box').getBoundingClientRect();
+				var offset = ts - last_ts;
+				var left = box_rect.left + offset / step_px * Math.cos(angle * Math.PI / 180);
+				var top = box_rect.top - offset / step_px * Math.sin(angle * Math.PI / 180);
+				// top
+				if (top <= window_rect.top)
+				{
+					angle *= -1;
+					top = window_rect.top + 1;
+				}
+				// right
+				if (left + box_rect.width >= window_rect.right)
+				{
+					angle = (angle < 0 ? -1 : 1) * (180 - Math.abs(angle));
+					left = window_rect.right - box_rect.width - 1;
+				}
+				// bottom
+				if (top + box_rect.height >= window_rect.bottom)
+				{
+					angle *= -1;
+					top = window_rect.bottom - box_rect.height - 1;
+				}
+				// left
+				if (left <= window_rect.left)
+				{
+					angle = (angle < 0 ? -1 : 1) * (180 - Math.abs(angle));
+					left = window_rect.left + 1;
+				}
+				$('box').style.left = left + 'px';
+				$('box').style.top = top + 'px';
+				last_ts = ts;
+				requestAnimationFrame(onAnimationFrame);
+			}
+			window.requestAnimationFrame(onAnimationFrame);
+			
+		});
+	</script>
+	<style>
+	* { 
+		box-sizing: border-box;
+	}
+	/* my styles */
+	body {
+		margin: 0;
+		padding: 0;
+		background-color: #000000;
+		color: #FF5000;
+		font-family: sans-serif;
+	}
+	.wrap {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+	}
+	.container {
+		position: absolute;
+	}
+	.message {
+		margin: 0;
+		padding: 0;
+		font-size: 80px;
+	}
+	.parts {
+		float: left;
+		clear: both;
+		font-size: 50px;
+	}
+	.parts > .part {
+		float: left;
+	}
+	/* / my styles */
+	</style>
+  </head>
+  <body>
+	<div id="body" class="wrap">
+		<div id="box" class="container">
+			<div class="header">
+				<p class="message">Вы НИХУЯ не делаете</p>
+			</div>
+			<div class="parts">
+				<div class="part part-item">
+					<span id="day-counter"></span>
+					<span id="day-text"></span>
+				</div>
+				<div class="part part-delimiter">&nbsp;</div>
+				<div class="part part-item">
+					<span id="hour-counter"></span>
+					<span id="hour-text"></span>
+				</div>
+				<div class="part part-delimiter">&nbsp;</div>
+				<div class="part part-item">
+					<span id="minute-counter"></span>
+					<span id="minute-text"></span>
+				</div>
+				<div class="part part-delimiter">&nbsp;</div>
+				<div class="part part-item">
+					<span id="second-counter"></span>
+					<span id="second-text"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+  </body>
+</html>
