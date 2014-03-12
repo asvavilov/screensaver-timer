@@ -118,7 +118,7 @@
 		margin: 0;
 		padding: 0;
 		background-color: #000000;
-		color: #FF5000;
+		color: #ffffff;
 		font-family: sans-serif;
 	}
 	.wrap {
@@ -142,6 +142,9 @@
 	.parts > .part {
 		float: left;
 	}
+	.orange {
+		color: #FF5000;
+	}
 	/* / my styles */
 	</style>
   </head>
@@ -149,26 +152,26 @@
 	<div id="body" class="wrap">
 		<div id="box" class="container">
 			<div class="header">
-				<p class="message">Вы НИХУЯ не делаете</p>
+				<p class="message">Вы <span class="orange">НИХУЯ</span> не делаете</p>
 			</div>
 			<div class="parts">
 				<div class="part part-item">
-					<span id="day-counter"></span>
+					<span id="day-counter" class="orange"></span>
 					<span id="day-text"></span>
 				</div>
 				<div class="part part-delimiter">&nbsp;</div>
 				<div class="part part-item">
-					<span id="hour-counter"></span>
+					<span id="hour-counter" class="orange"></span>
 					<span id="hour-text"></span>
 				</div>
 				<div class="part part-delimiter">&nbsp;</div>
 				<div class="part part-item">
-					<span id="minute-counter"></span>
+					<span id="minute-counter" class="orange"></span>
 					<span id="minute-text"></span>
 				</div>
 				<div class="part part-delimiter">&nbsp;</div>
 				<div class="part part-item">
-					<span id="second-counter"></span>
+					<span id="second-counter" class="orange"></span>
 					<span id="second-text"></span>
 				</div>
 			</div>
