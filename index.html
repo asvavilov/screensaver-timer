@@ -5,6 +5,8 @@
     <title>timer</title>
 	<script>
 		var gui = require('nw.gui');
+		var win = gui.Window.get();
+		win.enterFullscreen();
 		var doQuit = function()
 		{
 			gui.App.quit();
